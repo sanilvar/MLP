@@ -25,10 +25,17 @@ s11 <- s11[!is.na(s11$ESTU_HORASSEMANATRABAJA),]
 s11 <- s11[!is.na(s11$FAMI_TIENEINTERNET),]
 s11 <- s11[!is.na(s11$FAMI_PERSONASHOGAR),]
 s11 <- s11[!is.na(s11$COLE_JORNADA),]
+s11 <- s11[!is.na(s11$FAMI_ESTRATOVIVIENDA),]
+s11 <- s11[!is.na(s11$FAMI_SITUACIONECONOMICA),]
+saberN <- s11[,c('PUNT_MATEMATICAS','PUNT_C_NATURALES','PUNT_LECTURA_CRITICA', 
+                  'PUNT_SOCIALES_CIUDADANAS','PUNT_INGLES')]
 
-plot(saberN$PUNT_INGLES, saberN$PUNT_MATEMATICAS, pch = 20)# Modelo lineal
-plot(s11$PUNT_MATEMATICAS, factor(s11$COLE_JORNADA), pch = 10)# Modelo lineal
-plot(s11$PUNT_MATEMATICAS, factor(s11$FAMI_NUMLIBROS), pch = 10)# Modelo lineal
+
+plot(saberN$PUNT_INGLES,saberN$PUNT_MATEMATICAS, pch=20)
+plot(saberN$PUNT_C_NATURALES,saberN$PUNT_MATEMATICAS, pch=20)
+plot(saberN$PUNT_LECTURA_CRITICA,saberN$PUNT_MATEMATICAS, pch=20)
+plot(factor(s11$COLE_JORNADA), s11$PUNT_MATEMATICAS,  pch = 20)# Modelo lineal
+plot(factor(s11$FAMI_NUMLIBROS),s11$PUNT_MATEMATICAS,  pch = 20)# Modelo lineal
 plot(s11$PUNT_MATEMATICAS, factor(s11$FAMI_TIENECOMPUTADOR), pch = 10)# Modelo lineal
 plot(s11$PUNT_MATEMATICAS, factor(s11$ESTU_DEDICACIONLECTURADIARIA), pch = 10)# Modelo lineal
 
@@ -125,10 +132,10 @@ m2 = lm(PUNT_MATEMATICAS ~ PUNT_C_NATURALES~PUNT_LECTURA_CRITICA,data = muestra_
 
 #Se introduce inteeracción entre las variables para ver si mejora el resultado
 m2 = lm(PUNT_MATEMATICAS ~ PUNT_C_NATURALES * PUNT_LECTURA_CRITICA * 
-          PUNT_SOCIALES_CIUDADANAS * PUNT_INGLES + 
+          PUNT_SOCIALES_CIUDADANAS + PUNT_INGLES + 
           COLE_JORNADA + COLE_AREA_UBICACION + COLE_NATURALEZA + 
           ESTU_HORASSEMANATRABAJA + COLE_GENERO + ESTU_GENERO + 
-          COLE_CALENDARIO,data = muestra_train) #42.01123
+          COLE_CALENDARIO ,data = muestra_train) #42.01123
 
 summary(m2)
 step(m2, direction = "both", trace = 0)
@@ -143,4 +150,3 @@ muestra_test$PRONO=y_pron
 
 resultado = data.frame(muestra_test$ESTU_CONSECUTIVO,muestra_test$PRONO)
 write.csv(resultado,'c://tmp//Tarea03MLP.txt')
-
